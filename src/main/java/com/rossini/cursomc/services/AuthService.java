@@ -25,13 +25,14 @@ public class AuthService {
 	private Random rand = new Random();
 
 	public void sendNewPassword(String email) {
+
 		Cliente cliente = clienteRepository.findByEmail(email);
 		if (cliente == null) {
 			throw new ObjectNotFoundException("Email não encontrado");
 		}
 
 		String newPass = newPassword();
-		cliente.setSenha(newPass);
+		cliente.setSenha(pe.encode(newPass));
 
 		clienteRepository.save(cliente);
 		emailService.sendNewPasswordEmail(cliente, newPass);
@@ -51,10 +52,8 @@ public class AuthService {
 			return (char) (rand.nextInt(10) + 48);
 		} else if (opt == 1) { // gera letra maiuscula
 			return (char) (rand.nextInt(26) + 65);
-
 		} else { // gera letra minuscula
 			return (char) (rand.nextInt(26) + 97);
-
 		}
 	}
 }
